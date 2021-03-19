@@ -17,3 +17,38 @@ library(QuantPsyc) #For lm.beta function
 library(ggpubr) #For advanced QQ Plots
 
 #Attaching Data Files
+attach(EmployeeData)
+
+#Normality Test ----------------------------------------------------------
+
+DataSkewness <- EmployeeData %>% 
+  summarise(skewness(satisfaction_level),
+            skewness(last_evaluation),
+            skewness(number_project),
+            skewness(average_montly_hours),
+            skewness(time_spend_company),
+            skewness(Work_accident),
+            skewness(left),
+            skewness(promotion_last_5years),
+            skewness(Dept_Convert),
+            skewness(Salary_Convert),
+            skewness(Log_TimeSpent))
+DataKurtosis <- EmployeeData %>% 
+  summarise(kurtosis(satisfaction_level),
+            kurtosis(last_evaluation),
+            kurtosis(number_project),
+            kurtosis(average_montly_hours),
+            kurtosis(time_spend_company),
+            kurtosis(Work_accident),
+            kurtosis(left),
+            kurtosis(promotion_last_5years),
+            kurtosis(Dept_Convert),
+            kurtosis(Salary_Convert),
+            kurtosis(Log_TimeSpent))
+as.data.frame(DataSkewness)            
+as.data.frame(DataKurtosis)
+
+write.csv(as.data.frame(DataKurtosis),
+          file = "DataKurtosis.csv")
+write.csv(as.data.frame(DataSkewness),
+          file = "DataSkewness.csv")

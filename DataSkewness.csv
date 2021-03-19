@@ -1,0 +1,2 @@
+,skewness(satisfaction_level),skewness(last_evaluation),skewness(number_project),skewness(average_montly_hours),skewness(time_spend_company),skewness(Work_accident),skewness(left),skewness(promotion_last_5years),skewness(Dept_Convert),skewness(Salary_Convert),skewness(Log_TimeSpent)
+1,-0.539013051,-0.031801341,0.332810239,0.027523139,1.815037839,1.915807992,1.789256834,7.493015562,-0.810319485,0.570929381,0.544127234
