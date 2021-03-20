@@ -52,3 +52,17 @@ write.csv(as.data.frame(DataKurtosis),
           file = "DataKurtosis.csv")
 write.csv(as.data.frame(DataSkewness),
           file = "DataSkewness.csv")
+
+boxplot(satisfaction_level)
+boxplot(last_evaluation)
+boxplot(number_project)
+boxplot(average_montly_hours)
+boxplot(time_spend_company)
+boxplot(Work_accident)
+boxplot(left)
+boxplot(promotion_last_5years)
+boxplot(dept)
+boxplot(salary)
+boxplot(Dept_Convert)
+boxplot(Salary_Convert)
+boxplot(Log_TimeSpent)
