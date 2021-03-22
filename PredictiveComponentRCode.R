@@ -1,10 +1,10 @@
 #If p-value is less than 0.05 then accept alt and reject null.
 #If p-value is more than 0.05 then accept null and reject alt.
 
-#To save the data file in the current working directory ####################
+##To save the data file in the current working directory ####################
 save(EmployeeData, file="EmployeeData.RData")
 
-#Packages and Data File Activation ---------------------------------------
+##Packages and Data File Activation ---------------------------------------
 
 #Package Activation
 library(DescTools) #For Mode
@@ -19,7 +19,7 @@ library(ggpubr) #For advanced QQ Plots
 #Attaching Data Files
 attach(EmployeeData)
 
-#Normality Test ----------------------------------------------------------
+##Normality Test ----------------------------------------------------------
 
 DataSkewness <- EmployeeData %>% 
   summarise(skewness(satisfaction_level),
@@ -87,3 +87,45 @@ boxplot(Imp_timeSpend)
 boxplot.stats(Imp_timeSpend)
 skewness(Imp_timeSpend)
 kurtosis(Imp_timeSpend)
+
+##Tests For Linear Relation & Multicollienarity--------------------------
+#Continuous Variables
+VariableMatrix <- cbind(EmployeeData[,c(1:5,13)],Imp_timeSpend,Inv_TimeSpent)
+CorResult <- rcorr(as.matrix(VariableMatrix))
+write.csv(as.data.frame(CorResult$r),
+          file = "Correlation Result R Values.csv")
+
+write.csv(as.data.frame(CorResult$P),
+          file = "Correlation Result P Values.csv")
+#Categorical Variables
+#2 category variables
+LeveneTest(average_montly_hours,
+           as.factor(Work_accident),
+           center = mean)        #p=0.00019(<0.05),F=13.89
+t.test(average_montly_hours~Work_accident,
+       var.equal=T)             #p=0.161(>0.05),T=1.4013
+
+LeveneTest(average_montly_hours,
+           as.factor(left),
+           center = mean)       #p=2.2e-16(<0.05),F=1085.8
+t.test(average_montly_hours~left,
+       var.equal=T)             #p=2.76e-14(<0.05),T=-7.6184
+
+LeveneTest(average_montly_hours,
+           as.factor(promotion_last_5years),
+           center = mean)       #p=0.6522(>0.05),F=0.2031
+t.test(average_montly_hours~promotion_last_5years,
+       var.equal=F)             #p=0.5799(>0.05),T=0.55447
+
+#2+ Categories in Variable
+LeveneTest(average_montly_hours,
+           as.factor(Dept_Convert),
+           center = mean)       #p=0.6068(>0.05),F=0.8101
+welch_anova_test(data = EmployeeData,
+                average_montly_hours~Dept_Convert)   #p=0.989(>0.05),F=0.24
+
+LeveneTest(average_montly_hours,
+           as.factor(Salary_Convert),
+           center = mean)       #p=0.02856(<0.05),F=3.557
+aov_salary <- aov(average_montly_hours~Salary_Convert)
+summary(aov_salary)             #p=0.954(>0.05),F=0.003
