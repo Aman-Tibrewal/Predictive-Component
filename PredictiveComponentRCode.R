@@ -90,8 +90,8 @@ kurtosis(Imp_timeSpend)
 
 ##Tests For Linear Relation & Multicollienarity--------------------------
 #Continuous Variables
-VariableMatrix <- cbind(EmployeeData[,c(1:5,13)],Imp_timeSpend,Inv_TimeSpent)
-CorResult <- rcorr(as.matrix(VariableMatrix))
+CorVariableMatrix <- cbind(EmployeeData[,c(1:5,13)],Imp_timeSpend,Inv_TimeSpent)
+CorResult <- rcorr(as.matrix(CorVariableMatrix))
 write.csv(as.data.frame(CorResult$r),
           file = "Correlation Result R Values.csv")
 
@@ -129,3 +129,38 @@ LeveneTest(average_montly_hours,
            center = mean)       #p=0.02856(<0.05),F=3.557
 aov_salary <- aov(average_montly_hours~Salary_Convert)
 summary(aov_salary)             #p=0.954(>0.05),F=0.003
+
+##Linear Regression Models--------------------------------------------------
+
+#Model 1 -------------------------------------------------------------------
+#Variables Taken: DV: Average_Monthly_Hours;
+#IV: Last_Evaluation, Number_Projects, Left, Imp_TimeSpent
+
+Model1 <- lm(average_montly_hours~
+             last_evaluation+
+               number_project+
+               left+
+               Imp_timeSpend)
+summary(Model1)
+lm.beta(Model1)
+
+#Model 2 -------------------------------------------------------------------
+#Variables Taken: DV: Average_Monthly_Hours;
+#IV: Last_Evaluation, Number_Projects, Left
+Model2 <- lm(average_montly_hours~
+               last_evaluation+
+               number_project+
+               left)
+summary(Model2)
+lm.beta(Model2)
+
+#Model 3 -------------------------------------------------------------------
+#Variables Taken: DV: Average_Monthly_Hours;
+#IV: Last_Evaluation, Number_Projects, Left, Inv_TimeSpent
+Model3 <- lm(average_montly_hours~
+               last_evaluation+
+               number_project+
+               left+
+               Inv_TimeSpent)
+summary(Model3)
+lm.beta(Model3)
