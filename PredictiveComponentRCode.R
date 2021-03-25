@@ -164,3 +164,5 @@ Model3 <- lm(average_montly_hours~
                Inv_TimeSpent)
 summary(Model3)
 lm.beta(Model3)
+
+#Model 4 -------------------------------------------------------------------
