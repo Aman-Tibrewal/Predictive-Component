@@ -165,5 +165,149 @@ Model3 <- lm(average_montly_hours~
 summary(Model3)
 lm.beta(Model3)
 
-#Model 4 -------------------------------------------------------------------
+##DATA REDACTION AND TESTING ---------------------------------------------------
 
+#We have Removed the 824 rows out of the 12003 rows of data from the original data set
+#this new data set has been imported under the name EmployeeData_Redacted
+
+#since a large number of rows were removed, the assumption testing were done again.
+
+#If p-value is less than 0.05 then accept alt and reject null.
+#If p-value is more than 0.05 then accept null and reject alt.
+
+##To save the data file in the current working directory ####################
+save(EmployeeData_Redacted, file="EmployeeData_Redacted.RData")
+
+
+#Attaching Data Files
+attach(EmployeeData_Redacted)
+
+##Normality Test (Redacted Data) -----------------------------------------------
+
+DataSkewnessRedacted <- EmployeeData_Redacted %>% 
+  summarise(skewness(satisfaction_level2),
+            skewness(last_evaluation2),
+            skewness(number_project2),
+            skewness(average_montly_hours2),
+            skewness(time_spend_company2),
+            skewness(Log_TimeSpent2),
+            skewness(Inv_TimeSpent2))
+DataKurtosisRedacted <- EmployeeData_Redacted %>% 
+  summarise(kurtosis(satisfaction_level2),
+            kurtosis(last_evaluation2),
+            kurtosis(number_project2),
+            kurtosis(average_montly_hours2),
+            kurtosis(time_spend_company2),
+            kurtosis(Log_TimeSpent2),
+            kurtosis(Inv_TimeSpent2))
+as.data.frame(DataSkewnessRedacted)            
+as.data.frame(DataKurtosisRedacted)
+
+write.csv(as.data.frame(DataKurtosisRedacted),
+          file = "DataKurtosisRed.csv")
+write.csv(as.data.frame(DataSkewnessRedacted),
+          file = "DataSkewnessRed.csv")
+
+##Outlier Test (Redacted Data)-------------------------------------------------------------
+boxplot(time_spend_company2, 
+        main="Redacted time_spend_company")
+
+#Transformation (Log) attempted
+skewness(Log_TimeSpent2)
+kurtosis(Log_TimeSpent2)
+
+#Transformation (Inverse) attempted
+skewness(Inv_TimeSpent2)
+kurtosis(Inv_TimeSpent2)
+
+#After Transformation, the skewness and kurtosis values were bought down significantly
+#The skewness was less in log compared to inverse, whereas, kurtosis was less in inverse.
+
+##Tests For Linear Relation & Multicollienarity (Redacted Data)--------------------------
+#Continuous Variables
+VariableMatrixRedacted <- cbind(EmployeeData_Redacted[,c(1:5,13)],Inv_TimeSpent2)
+CorResultRedacted <- rcorr(as.matrix(VariableMatrixRedacted))
+write.csv(as.data.frame(CorResultRedacted$r),
+          file = "Correlation Result Redacted R Values.csv")
+
+write.csv(as.data.frame(CorResultRedacted$P),
+          file = "Correlation Result Redacted P Values.csv")
+#Categorical Variables
+#2 category variables
+LeveneTest(average_montly_hours2,
+           as.factor(Work_accident2),
+           center = mean)        #p=0.000151(<0.05),F=14.369
+t.test(average_montly_hours2~Work_accident2,
+       var.equal=T)             #p=0.4348(>0.05),T=0.78101
+
+LeveneTest(average_montly_hours2,
+           as.factor(left2),
+           center = mean)       #p=2.2e-16(<0.05),F=1230.1
+t.test(average_montly_hours2~left2,
+       var.equal=T)             #p=5.185e-09(<0.05),T=-5.84557
+
+LeveneTest(average_montly_hours2,
+           as.factor(promotion_last_5years2),
+           center = mean)       #p=0.5717(>0.05),F=0.3199
+t.test(average_montly_hours2~promotion_last_5years2,
+       var.equal=F)             #p=0.3381(>0.05),T=0.9608
+
+#2+ Categories in Variable
+LeveneTest(average_montly_hours2,
+           as.factor(Dept_Convert2),
+           center = mean)       #p=0.5583(>0.05),F=0.8625
+welch_anova_test(data = EmployeeData_Redacted,
+                 average_montly_hours2~Dept_Convert2)   #p=0.909(>0.05),F=0.45
+
+LeveneTest(average_montly_hours2,
+           as.factor(Salary_Convert2),
+           center = mean)       #p=0.01421(<0.05),F=4.2554
+aov_salaryRedacted <- aov(average_montly_hours2~ Salary_Convert2)
+summary(aov_salaryRedacted)             #p=0.925(>0.05),F=0.009
+
+##Model Testing(Redacted Data) ---------------------------------------------------
+
+#Model 4--------------------------------------------------------------------------
+#Data: EmployeeData_Redacted
+#Variables Taken: DV: Average_Monthly_Hours;
+#IV: Last_Evaluation, Number_Projects, Left, TimeSpent
+Model4 <- lm(average_montly_hours2 ~
+               last_evaluation2 +
+               number_project2 +
+               left2 +
+               time_spend_company2)
+summary(Model4)
+
+#Model 5--------------------------------------------------------------------------
+#Data: EmployeeData_Redacted
+#Variables Taken: DV: Average_Monthly_Hours;
+#IV: Last_Evaluation, Number_Projects, Left
+Model5 <- lm(average_montly_hours2 ~ 
+               last_evaluation2 +
+               number_project2 +
+               left2)
+summary(Model5)
+
+#Model 6--------------------------------------------------------------------------
+#Data: EmployeeData_Redacted
+#Variables Taken: DV: Average_Monthly_Hours;
+#IV: Last_Evaluation, Number_Projects, Left, Log_TimeSpent
+
+Model6 <- lm(average_montly_hours2 ~ 
+               last_evaluation2 +
+               number_project2 +
+               left2+
+               Log_TimeSpent2)
+summary(Model6)
+
+#Model 7--------------------------------------------------------------------------
+#Data: EmployeeData_Redacted
+#Variables Taken: DV: Average_Monthly_Hours;
+#IV: Last_Evaluation, Number_Projects, Left, Inv_TimeSpent
+
+Model7 <- lm(average_montly_hours2 ~ 
+               last_evaluation2 +
+               number_project2 +
+               left2+
+               Inv_TimeSpent2)
+summary(Model7)
