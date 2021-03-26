@@ -23,6 +23,7 @@ library(lmOut) #for lmout function to export LM data
 
 #Attaching Data Files
 attach(EmployeeData)
+attach(EmployeeData_Redacted)
 
 ##Normality Test ----------------------------------------------------------
 
@@ -108,32 +109,32 @@ LeveneTest(average_montly_hours,
            as.factor(Work_accident),
            center = mean)        #p=0.00019(<0.05),F=13.89
 t.test(average_montly_hours~Work_accident,
-       var.equal=T)             #p=0.161(>0.05),T=1.4013
+       var.equal=F)             #p=0.1487(>0.05),T=1.4445
 
 LeveneTest(average_montly_hours,
            as.factor(left),
            center = mean)       #p=2.2e-16(<0.05),F=1085.8
 t.test(average_montly_hours~left,
-       var.equal=T)             #p=2.76e-14(<0.05),T=-7.6184
+       var.equal=F)             #p=2.76e-14(<0.05),T=-7.6184
 
 LeveneTest(average_montly_hours,
            as.factor(promotion_last_5years),
            center = mean)       #p=0.6522(>0.05),F=0.2031
 t.test(average_montly_hours~promotion_last_5years,
-       var.equal=F)             #p=0.5799(>0.05),T=0.55447
+       var.equal=T)             #p=0.5882(>0.05),T=0.54143
 
 #2+ Categories in Variable
 LeveneTest(average_montly_hours,
            as.factor(Dept_Convert),
            center = mean)       #p=0.6068(>0.05),F=0.8101
-welch_anova_test(data = EmployeeData,
-                average_montly_hours~Dept_Convert)   #p=0.989(>0.05),F=0.24
+aov_dep <- aov(average_montly_hours~Dept_Convert)
+summary(aov_dep)                #p=0.676(>0.05),F=0.175
 
 LeveneTest(average_montly_hours,
            as.factor(Salary_Convert),
            center = mean)       #p=0.02856(<0.05),F=3.557
-aov_salary <- aov(average_montly_hours~Salary_Convert)
-summary(aov_salary)             #p=0.954(>0.05),F=0.003
+welch_anova_test(data = EmployeeData,
+                 average_montly_hours~Salary_Convert) #p=0.951(>0.05),F=2804.0
 
 ##Linear Regression Models--------------------------------------------------
 
@@ -251,32 +252,32 @@ LeveneTest(average_montly_hours2,
            as.factor(Work_accident2),
            center = mean)        #p=0.000151(<0.05),F=14.369
 t.test(average_montly_hours2~Work_accident2,
-       var.equal=T)             #p=0.4348(>0.05),T=0.78101
+       var.equal=F)             #p=0.419(>0.05),T=0.80821
 
 LeveneTest(average_montly_hours2,
            as.factor(left2),
            center = mean)       #p=2.2e-16(<0.05),F=1230.1
 t.test(average_montly_hours2~left2,
-       var.equal=T)             #p=5.185e-09(<0.05),T=-5.84557
+       var.equal=F)             #p=2.078e-06(<0.05),T=-4.7577
 
 LeveneTest(average_montly_hours2,
            as.factor(promotion_last_5years2),
            center = mean)       #p=0.5717(>0.05),F=0.3199
 t.test(average_montly_hours2~promotion_last_5years2,
-       var.equal=F)             #p=0.3381(>0.05),T=0.9608
+       var.equal=T)             #p=0.3556(>0.05),T=0.92383
 
 #2+ Categories in Variable
 LeveneTest(average_montly_hours2,
            as.factor(Dept_Convert2),
            center = mean)       #p=0.5583(>0.05),F=0.8625
-welch_anova_test(data = EmployeeData_Redacted,
-                 average_montly_hours2~Dept_Convert2)   #p=0.909(>0.05),F=0.45
+aov_depRedacted <- aov(average_montly_hours2~Dept_Convert2)
+summary(aov_depRedacted)        #p=0.711(>0.05),F=0.137
 
 LeveneTest(average_montly_hours2,
            as.factor(Salary_Convert2),
            center = mean)       #p=0.01421(<0.05),F=4.2554
-aov_salaryRedacted <- aov(average_montly_hours2~ Salary_Convert2)
-summary(aov_salaryRedacted)             #p=0.925(>0.05),F=0.009
+welch_anova_test(data = EmployeeData_Redacted,
+                 average_montly_hours2~Salary_Convert2)   #p=0.912(>0.05),F=2505.0
 
 ##Model Testing(Redacted Data) ---------------------------------------------------
 
