@@ -16,6 +16,11 @@ library(Hmisc) #For rcorr Function
 library(QuantPsyc) #For lm.beta function
 library(ggpubr) #For advanced QQ Plots
 
+#New Package and function used for extracting LM output in a CSV File
+# install.packages("remotes")
+# remotes::install_github("benhollomon/lmOut")
+library(lmOut) #for lmout function to export LM data
+
 #Attaching Data Files
 attach(EmployeeData)
 
@@ -144,6 +149,9 @@ Model1 <- lm(average_montly_hours~
 summary(Model1)
 lm.beta(Model1)
 
+lmOut(Model1, file="Model1.csv", writecsv = TRUE)
+plot(average_montly_hours,Model1$fitted.values)
+
 #Model 2 -------------------------------------------------------------------
 #Variables Taken: DV: Average_Monthly_Hours;
 #IV: Last_Evaluation, Number_Projects, Left
@@ -154,6 +162,8 @@ Model2 <- lm(average_montly_hours~
 summary(Model2)
 lm.beta(Model2)
 
+lmOut(Model2, file="Model2.csv", writecsv = TRUE)
+plot(average_montly_hours,Model2$fitted.values)
 #Model 3 -------------------------------------------------------------------
 #Variables Taken: DV: Average_Monthly_Hours;
 #IV: Last_Evaluation, Number_Projects, Left, Inv_TimeSpent
@@ -164,6 +174,9 @@ Model3 <- lm(average_montly_hours~
                Inv_TimeSpent)
 summary(Model3)
 lm.beta(Model3)
+
+lmOut(Model3, file="Model3.csv", writecsv = TRUE)
+plot(average_montly_hours,Model3$fitted.values)
 
 ##DATA REDACTION AND TESTING ---------------------------------------------------
 
@@ -277,6 +290,10 @@ Model4 <- lm(average_montly_hours2 ~
                left2 +
                time_spend_company2)
 summary(Model4)
+lm.beta(Model4)
+
+lmOut(Model4, file="Model4.csv", writecsv = TRUE)
+plot(average_montly_hours2,Model4$fitted.values)
 
 #Model 5--------------------------------------------------------------------------
 #Data: EmployeeData_Redacted
@@ -287,6 +304,10 @@ Model5 <- lm(average_montly_hours2 ~
                number_project2 +
                left2)
 summary(Model5)
+lm.beta(Model5)
+
+lmOut(Model5, file="Model5.csv", writecsv = TRUE)
+plot(average_montly_hours2,Model5$fitted.values)
 
 #Model 6--------------------------------------------------------------------------
 #Data: EmployeeData_Redacted
@@ -299,6 +320,10 @@ Model6 <- lm(average_montly_hours2 ~
                left2+
                Log_TimeSpent2)
 summary(Model6)
+lm.beta(Model6)
+
+lmOut(Model6, file="Model6.csv", writecsv = TRUE)
+plot(average_montly_hours2,Model6$fitted.values)
 
 #Model 7--------------------------------------------------------------------------
 #Data: EmployeeData_Redacted
@@ -311,3 +336,7 @@ Model7 <- lm(average_montly_hours2 ~
                left2+
                Inv_TimeSpent2)
 summary(Model7)
+lm.beta(Model7)
+
+lmOut(Model7, file="Model7.csv", writecsv = TRUE)
+plot(average_montly_hours2,Model7$fitted.values)
